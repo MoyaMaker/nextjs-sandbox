@@ -3,7 +3,7 @@ import { IComponent } from "./interface/component-interface";
 import { DesignerComponents } from "./constants/designer-components";
 import { useTreeComponents } from "./tree-components-context-provider";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 
 export default function SidebarComponentProperties() {
   const { selectedComponent } = useTreeComponents();
