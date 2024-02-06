@@ -6,7 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { IComponent } from "./interface/component-interface";
+import { IComponent } from "../interfaces/component-interface";
 import { ComponentsData } from "@/data/components";
 
 type TreeComponentsContextType = {

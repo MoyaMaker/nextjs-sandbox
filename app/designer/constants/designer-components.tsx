@@ -8,7 +8,7 @@ import {
   SelectFormType,
   SelectPreviewComponent,
 } from "../components/select-component";
-import { IComponent } from "../interface/component-interface";
+import { IComponent } from "../interfaces/component-interface";
 
 export const DesignerComponents: Record<string, IComponent<any>> = {
   Input: {

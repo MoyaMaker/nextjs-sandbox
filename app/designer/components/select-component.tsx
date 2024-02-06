@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FieldProperties } from "../interface/component-interface";
+import { FieldProperties } from "../interfaces/component-interface";
 
 export type SelectProps = {
   placeholder?: string | undefined;

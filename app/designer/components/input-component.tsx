@@ -1,5 +1,5 @@
 import { InputHTMLAttributes } from "react";
-import { FieldProperties } from "../interface/component-interface";
+import { FieldProperties } from "../interfaces/component-interface";
 
 type BasicInputAttributes = Pick<
   InputHTMLAttributes<HTMLInputElement>,

@@ -1,7 +1,7 @@
 import { RenderFormField } from "./components/render-form-field";
-import { IComponent } from "./interface/component-interface";
+import { IComponent } from "./interfaces/component-interface";
 import { DesignerComponents } from "./constants/designer-components";
-import { useTreeComponents } from "./tree-components-context-provider";
+import { useTreeComponents } from "./providers/tree-components-context-provider";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useEffect } from "react";
 

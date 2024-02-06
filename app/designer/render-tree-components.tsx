@@ -1,5 +1,5 @@
 import { PreviewComponents } from "./constants/designer-components";
-import { useTreeComponents } from "./tree-components-context-provider";
+import { useTreeComponents } from "./providers/tree-components-context-provider";
 
 export default function RenderTreeComponents() {
   const { treeComponents, selectedComponent, setSelectedComponent } =
