@@ -40,6 +40,6 @@ export const PreviewComponents = ({
     case "Select":
       return <SelectPreviewComponent props={props} />;
     default:
-      throw new Error(`Component not declared: ${type}`);
+      throw new Error(`Preview component not declared: ${type}`);
   }
 };
