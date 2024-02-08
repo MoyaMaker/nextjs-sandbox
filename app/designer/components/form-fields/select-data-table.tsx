@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
-export const SelectInputType = ({
+export const SelectDataTable = ({
   name,
   field,
   error,
@@ -18,11 +18,24 @@ export const SelectInputType = ({
   field: ControllerRenderProps<any, string>;
   error?: any | undefined;
 }) => {
-  const inputTypes = ["date", "email", "number", "password", "text"];
+  const tables = [
+    {
+      label: "Table 1",
+      value: "1",
+    },
+    {
+      label: "Table 2",
+      value: "2",
+    },
+    {
+      label: "Table 3",
+      value: "3",
+    },
+  ];
 
   return (
     <Select
-      name={name}
+      name={field.name}
       defaultValue={field.value}
       onValueChange={field.onChange}
     >
@@ -31,9 +44,9 @@ export const SelectInputType = ({
       </SelectTrigger>
 
       <SelectContent>
-        {inputTypes.map((type, index) => (
-          <SelectItem key={index} value={type}>
-            {type}
+        {tables.map((table) => (
+          <SelectItem key={table.value} value={table.value}>
+            {table.label}
           </SelectItem>
         ))}
       </SelectContent>

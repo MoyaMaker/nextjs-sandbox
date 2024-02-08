@@ -5,7 +5,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FieldProperties } from "../interfaces/component-interface";
+import {
+  FieldProperties,
+  IComponent,
+} from "../../interfaces/component-interface";
+import { parseInlineCss } from "../../helpers/parse-inline-css";
 
 export type SelectProps = {
   placeholder?: string | undefined;
@@ -32,10 +36,21 @@ export const SelectFormType: Record<keyof SelectProps, FieldProperties> = {
   },
 };
 
-export function SelectPreviewComponent({ props }: { props: SelectProps }) {
+export function SelectPreviewComponent({
+  component,
+}: {
+  component: IComponent<SelectProps>;
+}) {
+  const { margins, customCss, props } = component;
+
+  const inlineCss = parseInlineCss(customCss);
+
   return (
     <Select defaultValue={props.defaultValue}>
-      <SelectTrigger className="pointer-events-none">
+      <SelectTrigger
+        className="pointer-events-none"
+        style={{ ...margins, ...inlineCss }}
+      >
         <SelectValue placeholder={props.placeholder} />
       </SelectTrigger>
 

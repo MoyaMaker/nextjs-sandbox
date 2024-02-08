@@ -1,4 +1,10 @@
-export type FieldType = "input" | "number" | "checkbox" | "select-type";
+export type FieldType =
+  | "input"
+  | "number"
+  | "checkbox"
+  | "select-input-type"
+  | "select-data-table"
+  | "select-form-type";
 
 export type FieldProperties = {
   type: FieldType;
@@ -10,5 +16,12 @@ export interface IComponent<T extends Record<string, any>> {
   name: string;
   props: T;
   fields: Record<keyof T, FieldProperties>;
+  margins: {
+    marginTop: number;
+    marginRight: number;
+    marginBottom: number;
+    marginLeft: number;
+  };
+  customCss: string;
   valid: boolean;
 }

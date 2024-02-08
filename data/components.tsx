@@ -20,4 +20,14 @@ export const ComponentsData = [
     },
     valid: true,
   },
+  {
+    id: "C3",
+    name: "Form",
+    props: {
+      name: "",
+      data: "",
+      type: "create",
+    },
+    valid: false,
+  },
 ];

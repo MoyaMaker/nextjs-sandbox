@@ -1,5 +1,9 @@
 import { InputHTMLAttributes } from "react";
-import { FieldProperties } from "../interfaces/component-interface";
+import {
+  FieldProperties,
+  IComponent,
+} from "../../interfaces/component-interface";
+import { parseInlineCss } from "../../helpers/parse-inline-css";
 
 type BasicInputAttributes = Pick<
   InputHTMLAttributes<HTMLInputElement>,
@@ -22,7 +26,7 @@ export const InputFormTypes: Record<keyof InputProps, FieldProperties> = {
     required: true,
   },
   type: {
-    type: "select-type",
+    type: "select-input-type",
     required: true,
   },
   defaultValue: {
@@ -39,10 +43,19 @@ export const InputFormTypes: Record<keyof InputProps, FieldProperties> = {
   },
 };
 
-export function InputPreviewComponent({ props }: { props: InputProps }) {
+export function InputPreviewComponent({
+  component,
+}: {
+  component: IComponent<InputProps>;
+}) {
+  const { margins, customCss, props } = component;
+
+  const inlineCss = parseInlineCss(customCss);
+
   return (
     <input
       {...props}
+      style={{ ...margins, ...inlineCss }}
       className="w-full border border-gray-400 p-2 rounded-lg pointer-events-none"
     />
   );
