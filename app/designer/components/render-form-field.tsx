@@ -1,21 +1,27 @@
 import { ControllerRenderProps } from "react-hook-form";
 import { SelectInputType } from "./form-fields/select-input-type";
+import { cn } from "@/lib/utils";
 
 export function RenderFormField({
   id,
   type,
   field,
+  error,
 }: {
   id: string;
   type: string;
   field: ControllerRenderProps<any, string>;
+  error?: any | undefined;
 }): JSX.Element {
   switch (type) {
     case "input":
       return (
         <input
           id={id}
-          className="w-full border border-gray-400 p-2 rounded-lg text-xs invalid:ring invalid:ring-red-500"
+          className={cn(
+            "w-full border p-2 rounded-lg text-xs",
+            !error ? "border-gray-400" : "border-red-500"
+          )}
           {...field}
         />
       );
@@ -24,7 +30,10 @@ export function RenderFormField({
       return (
         <input
           id={id}
-          className="w-full border border-gray-400 p-2 rounded-lg text-xs invalid:ring invalid:ring-red-500"
+          className={cn(
+            "w-full border p-2 rounded-lg text-xs",
+            !error ? "border-gray-400" : "border-red-500"
+          )}
           {...field}
         />
       );

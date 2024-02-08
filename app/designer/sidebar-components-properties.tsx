@@ -2,8 +2,14 @@ import { RenderFormField } from "./components/render-form-field";
 import { IComponent } from "./interfaces/component-interface";
 import { DesignerComponents } from "./constants/designer-components";
 import { useTreeComponents } from "./providers/tree-components-context-provider";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import {
+  Controller,
+  SubmitErrorHandler,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
 import { useEffect } from "react";
+import { register } from "module";
 
 export default function SidebarComponentProperties() {
   const { selectedComponent } = useTreeComponents();
@@ -44,20 +50,28 @@ const FormComponent = ({
   const formFields = DesignerComponents[selectedComponent.name].fields;
 
   const {
+    register,
     control,
     handleSubmit,
     formState: { errors },
     watch,
+    trigger,
   } = useForm<FormTypes>({
     mode: "all",
+    shouldFocusError: false,
     defaultValues,
   });
 
   const onSubmit: SubmitHandler<FormTypes> = (data) =>
-    updateProps(componentId, data);
+    updateProps(componentId, data, true);
+
+  const onError: SubmitErrorHandler<FormTypes> = (errors) =>
+    updateProps(componentId, watch(), false);
 
   useEffect(() => {
-    const subscription = watch(() => handleSubmit(onSubmit)());
+    trigger();
+
+    const subscription = watch((values) => handleSubmit(onSubmit, onError)());
 
     return () => {
       subscription.unsubscribe();
@@ -68,7 +82,7 @@ const FormComponent = ({
   return (
     <form
       id={`form_${componentId}`}
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit, onError)}
       className="grid gap-2"
     >
       {Object.entries(formFields).map(([key, value], index) => (
@@ -88,13 +102,18 @@ const FormComponent = ({
             }}
             render={({ field }) => (
               <div className="w-3/5 flex flex-col items-start text-xs">
-                <RenderFormField id={key} type={value.type} field={field} />
+                <RenderFormField
+                  id={key}
+                  type={value.type}
+                  field={field}
+                  error={errors[key]}
+                />
 
-                {errors[key] && (
+                {/* {errors[key] && (
                   <span className="text-xs text-red-500">
                     {errors[key]?.message as string}
                   </span>
-                )}
+                )} */}
               </div>
             )}
           />

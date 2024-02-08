@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { PreviewComponents } from "./constants/designer-components";
 import { useTreeComponents } from "./providers/tree-components-context-provider";
 
@@ -10,16 +11,23 @@ export default function RenderTreeComponents() {
       {treeComponents &&
         treeComponents.map((component) => (
           <div
-            key={component.id}
+            key={JSON.stringify(component)}
             id={component.id}
             tabIndex={-1}
             onClick={() => setSelectedComponent(component)}
             className="relative"
           >
             {selectedComponent && selectedComponent.id === component.id && (
-              <div className="absolute w-full h-full border-2 border-blue-500" />
+              <div
+                key={`selected_${JSON.stringify(component)}`}
+                className={cn(
+                  "absolute w-full h-full border-2",
+                  selectedComponent.valid
+                    ? "border-green-500"
+                    : "border-red-500"
+                )}
+              />
             )}
-            {/* {JSON.stringify(component)} */}
             <PreviewComponents type={component.name} props={component.props} />
           </div>
         ))}

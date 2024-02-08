@@ -13,7 +13,11 @@ type TreeComponentsContextType = {
   treeComponents: IComponent<any>[] | undefined;
   selectedComponent: IComponent<any> | undefined;
   setSelectedComponent: Dispatch<SetStateAction<IComponent<any> | undefined>>;
-  updateProps: (componentId: string, props: Record<string, any>) => void;
+  updateProps: (
+    componentId: string,
+    props: Record<string, any>,
+    valid: boolean
+  ) => void;
 };
 
 type TreeComponentsProviderProps = {
@@ -35,11 +39,25 @@ export function TreeComponentsProvider({
     IComponent<any> | undefined
   >();
 
-  const updateProps = (componentId: string, props: Record<string, any>) => {
+  const updateProps = (
+    componentId: string,
+    props: Record<string, any>,
+    valid: boolean
+  ) => {
     setTreeComponents((comps) =>
-      comps?.map((comp) =>
-        comp.id === componentId ? { ...comp, props } : comp
-      )
+      comps?.map((comp) => {
+        if (comp.id === componentId) {
+          const updatedComponent: IComponent<any> = {
+            ...comp,
+            props,
+            valid,
+          };
+          setSelectedComponent(updatedComponent);
+          return updatedComponent;
+        }
+
+        return comp;
+      })
     );
   };
 

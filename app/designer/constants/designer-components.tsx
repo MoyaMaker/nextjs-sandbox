@@ -16,12 +16,14 @@ export const DesignerComponents: Record<string, IComponent<any>> = {
     name: "Input",
     props: InputDefaultProps,
     fields: InputFormTypes,
+    valid: true,
   },
   Select: {
     id: "",
     name: "Select",
     props: SelectDefaultProps,
     fields: SelectFormType,
+    valid: true,
   },
 };
 

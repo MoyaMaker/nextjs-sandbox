@@ -10,4 +10,5 @@ export interface IComponent<T extends Record<string, any>> {
   name: string;
   props: T;
   fields: Record<keyof T, FieldProperties>;
+  valid: boolean;
 }

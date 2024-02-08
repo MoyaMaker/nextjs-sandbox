@@ -8,6 +8,7 @@ export const ComponentsData = [
       defaultValue: "",
       required: false,
     },
+    valid: false,
   },
   {
     id: "C2",
@@ -17,5 +18,6 @@ export const ComponentsData = [
       placeholder: "Select",
       required: false,
     },
+    valid: true,
   },
 ];

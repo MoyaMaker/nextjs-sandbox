@@ -19,6 +19,7 @@ export const InputDefaultProps: InputProps = {
 export const InputFormTypes: Record<keyof InputProps, FieldProperties> = {
   title: {
     type: "input",
+    required: true,
   },
   type: {
     type: "select-type",

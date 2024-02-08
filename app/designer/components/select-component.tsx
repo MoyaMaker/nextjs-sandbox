@@ -22,6 +22,7 @@ export const SelectDefaultProps: SelectProps = {
 export const SelectFormType: Record<keyof SelectProps, FieldProperties> = {
   placeholder: {
     type: "input",
+    required: true,
   },
   defaultValue: {
     type: "input",
