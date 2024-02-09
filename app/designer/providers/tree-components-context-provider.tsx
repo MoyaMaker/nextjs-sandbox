@@ -2,18 +2,29 @@ import {
   Dispatch,
   SetStateAction,
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useState,
 } from "react";
 import { IComponent } from "../interfaces/component-interface";
 import { ComponentsData } from "@/data/components";
+import { generateId } from "../helpers/generate-id";
+import {
+  findPath,
+  insertAtPath,
+  moveAtPath,
+  removeFromPath,
+} from "../helpers/component-path";
 
 type TreeComponentsContextType = {
   treeComponents: IComponent<any>[] | undefined;
   selectedComponent: IComponent<any> | undefined;
   setSelectedComponent: Dispatch<SetStateAction<IComponent<any> | undefined>>;
-  updateProps: (component: IComponent<any>) => void;
+  addComponent: (component: IComponent<any>) => void;
+  removeComponent: (componentId: string) => void;
+  updateComponent: (component: IComponent<any>) => void;
+  handleDrop: (component: IComponent<any>, path: string) => void;
 };
 
 type TreeComponentsProviderProps = {
@@ -35,22 +46,65 @@ export function TreeComponentsProvider({
     IComponent<any> | undefined
   >();
 
-  const updateProps = (component: IComponent<any>) => {
-    setTreeComponents((comps) =>
-      comps?.map((comp) => {
-        if (comp.id === component.id) {
-          const updatedComponent: IComponent<any> = {
-            ...comp,
-            ...component,
-          };
-          setSelectedComponent(updatedComponent);
-          return updatedComponent;
-        }
+  const addComponent = (component: IComponent<any>) => {
+    setTreeComponents((comps) => {
+      if (!comps) {
+        return [component];
+      }
 
-        return comp;
-      })
-    );
+      return [...comps, component];
+    });
   };
+
+  const removeComponent = (componentId: string) => {
+    const components = treeComponents ? [...treeComponents] : [];
+
+    const path = findPath("", components, componentId);
+
+    removeFromPath(components, path);
+
+    setTreeComponents(components);
+  };
+
+  const updateComponent = (component: IComponent<any>) => {
+    const components = treeComponents ? [...treeComponents] : [];
+
+    const path = findPath("", components, component.id);
+
+    const compo = removeFromPath(components, path);
+
+    const updatedComponent: IComponent<any> = {
+      ...compo,
+      ...component,
+    };
+
+    insertAtPath(components, path, updatedComponent);
+
+    setSelectedComponent(updatedComponent);
+    setTreeComponents(components);
+  };
+
+  const handleDrop = useCallback(
+    (component: IComponent<any>, path: string) => {
+      const components = treeComponents ? [...treeComponents] : [];
+
+      if (!component.id) {
+        const newComponent = {
+          ...component,
+          id: generateId(5),
+        };
+
+        insertAtPath(components, path, newComponent);
+      } else {
+        const sourcePath = findPath("", components, component.id);
+
+        moveAtPath(components, sourcePath, path);
+      }
+
+      setTreeComponents(components);
+    },
+    [treeComponents]
+  );
 
   useEffect(() => {
     const components = ComponentsData as IComponent<any>[];
@@ -64,7 +118,10 @@ export function TreeComponentsProvider({
         treeComponents,
         selectedComponent,
         setSelectedComponent,
-        updateProps,
+        updateComponent,
+        addComponent,
+        removeComponent,
+        handleDrop,
       }}
     >
       {children}

@@ -23,5 +23,6 @@ export interface IComponent<T extends Record<string, any>> {
     marginLeft: number;
   };
   customCss: string;
+  children?: IComponent<any>[];
   valid: boolean;
 }

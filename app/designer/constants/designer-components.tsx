@@ -30,7 +30,7 @@ export const DesignerComponents: Record<string, IComponent<any>> = {
     fields: InputFormTypes,
     margins: defaultMargins,
     customCss: "",
-    valid: true,
+    valid: false,
   },
   Select: {
     id: "",
@@ -39,7 +39,7 @@ export const DesignerComponents: Record<string, IComponent<any>> = {
     fields: SelectFormType,
     margins: defaultMargins,
     customCss: "",
-    valid: true,
+    valid: false,
   },
   Form: {
     id: "",
@@ -48,13 +48,16 @@ export const DesignerComponents: Record<string, IComponent<any>> = {
     fields: FormFormTypes,
     margins: defaultMargins,
     customCss: "",
-    valid: true,
+    children: [],
+    valid: false,
   },
 };
 
 export const PreviewComponents = ({
+  index,
   component,
 }: {
+  index: number;
   component: IComponent<any>;
 }) => {
   switch (component.name) {
@@ -63,7 +66,7 @@ export const PreviewComponents = ({
     case "Select":
       return <SelectPreviewComponent component={component} />;
     case "Form":
-      return <FormPreviewComponent component={component} />;
+      return <FormPreviewComponent path={`${index}`} component={component} />;
     default:
       throw new Error(`Preview component not declared: ${component.name}`);
   }

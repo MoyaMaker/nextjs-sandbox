@@ -10,6 +10,7 @@ import {
   IComponent,
 } from "../../interfaces/component-interface";
 import { parseInlineCss } from "../../helpers/parse-inline-css";
+import { cn } from "@/lib/utils";
 
 export type SelectProps = {
   placeholder?: string | undefined;
@@ -41,14 +42,14 @@ export function SelectPreviewComponent({
 }: {
   component: IComponent<SelectProps>;
 }) {
-  const { margins, customCss, props } = component;
+  const { margins, customCss, props, valid } = component;
 
   const inlineCss = parseInlineCss(customCss);
 
   return (
     <Select defaultValue={props.defaultValue}>
       <SelectTrigger
-        className="pointer-events-none"
+        className={cn("pointer-events-none", valid ? "" : "border-red-500")}
         style={{ ...margins, ...inlineCss }}
       >
         <SelectValue placeholder={props.placeholder} />

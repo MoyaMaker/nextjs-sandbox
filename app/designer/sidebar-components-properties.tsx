@@ -63,7 +63,7 @@ const FormMargins = ({
     customCss: typeof customCss;
   };
 
-  const { updateProps } = useTreeComponents();
+  const { updateComponent } = useTreeComponents();
 
   const componentId = selectedComponent.id;
   const defaultValues = {
@@ -79,11 +79,11 @@ const FormMargins = ({
 
   const onSubmit: SubmitHandler<FormTypes> = (data) => {
     const { customCss, ...margins } = data;
-    updateProps({ ...selectedComponent, margins: margins, customCss });
+    updateComponent({ ...selectedComponent, margins: margins, customCss });
   };
 
   const onError: SubmitErrorHandler<FormTypes> = () =>
-    updateProps({
+    updateComponent({
       ...selectedComponent,
       margins: {
         marginTop: watch("marginTop"),
@@ -183,7 +183,7 @@ const FormComponent = ({
   const { props } = DesignerComponents[selectedComponent.name];
   type FormTypes = typeof props;
 
-  const { updateProps } = useTreeComponents();
+  const { updateComponent } = useTreeComponents();
 
   const componentId = selectedComponent.id;
   const defaultValues = selectedComponent.props;
@@ -202,10 +202,10 @@ const FormComponent = ({
   });
 
   const onSubmit: SubmitHandler<FormTypes> = (data) =>
-    updateProps({ ...selectedComponent, props: data, valid: true });
+    updateComponent({ ...selectedComponent, props: data, valid: true });
 
   const onError: SubmitErrorHandler<FormTypes> = () =>
-    updateProps({ ...selectedComponent, props: watch(), valid: false });
+    updateComponent({ ...selectedComponent, props: watch(), valid: false });
 
   useEffect(() => {
     trigger();

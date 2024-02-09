@@ -4,41 +4,45 @@ import {
   IComponent,
 } from "../../interfaces/component-interface";
 import { parseInlineCss } from "../../helpers/parse-inline-css";
+import { cn } from "@/lib/utils";
 
 type BasicInputAttributes = Pick<
   InputHTMLAttributes<HTMLInputElement>,
-  "type" | "placeholder" | "defaultValue" | "disabled" | "required" | "title"
+  "name" | "placeholder" | "disabled" | "required"
 >;
 
-export type InputProps = BasicInputAttributes & {};
+export type InputProps = BasicInputAttributes & {
+  label: string;
+  field: string;
+};
 
 export const InputDefaultProps: InputProps = {
-  type: "text",
-  defaultValue: "",
-  disabled: false,
+  name: "",
+  label: "Label",
   placeholder: "",
+  field: "",
   required: false,
+  disabled: false,
 };
 
 export const InputFormTypes: Record<keyof InputProps, FieldProperties> = {
-  title: {
+  name: {
     type: "input",
-    required: true,
   },
-  type: {
-    type: "select-input-type",
-    required: true,
-  },
-  defaultValue: {
+  label: {
     type: "input",
   },
   placeholder: {
     type: "input",
   },
-  required: {
-    type: "checkbox",
+  field: {
+    type: "input",
+    required: true,
   },
   disabled: {
+    type: "checkbox",
+  },
+  required: {
     type: "checkbox",
   },
 };
@@ -48,7 +52,7 @@ export function InputPreviewComponent({
 }: {
   component: IComponent<InputProps>;
 }) {
-  const { margins, customCss, props } = component;
+  const { margins, customCss, props, valid } = component;
 
   const inlineCss = parseInlineCss(customCss);
 
@@ -56,7 +60,10 @@ export function InputPreviewComponent({
     <input
       {...props}
       style={{ ...margins, ...inlineCss }}
-      className="w-full border border-gray-400 p-2 rounded-lg pointer-events-none"
+      className={cn(
+        "w-full border p-2 rounded-lg pointer-events-none",
+        valid ? "border-gray-400" : "border-red-500"
+      )}
     />
   );
 }
