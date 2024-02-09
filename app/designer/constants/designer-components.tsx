@@ -1,19 +1,21 @@
 import {
   FormDefaultProps,
-  FormFormTypes,
+  FormFieldsTypes,
   FormPreviewComponent,
 } from "../components/previews/form-component";
 import {
   InputDefaultProps,
-  InputFormTypes,
+  FormInputFieldsTypes,
   InputPreviewComponent,
+  NoFormInputFieldsTypes,
 } from "../components/previews/input-component";
 import {
   SelectDefaultProps,
-  SelectFormType,
+  FormSelectFieldsTypes,
   SelectPreviewComponent,
+  NoFormSelectFieldsTypes,
 } from "../components/previews/select-component";
-import { IComponent } from "../interfaces/component-interface";
+import { FieldProperties, IComponent } from "../interfaces/component-interface";
 
 const defaultMargins = {
   marginTop: 0,
@@ -22,36 +24,71 @@ const defaultMargins = {
   marginLeft: 0,
 };
 
-export const DesignerComponents: Record<string, IComponent<any>> = {
-  Input: {
-    id: "",
-    name: "Input",
-    props: InputDefaultProps,
-    fields: InputFormTypes,
-    margins: defaultMargins,
-    customCss: "",
-    valid: false,
-  },
-  Select: {
-    id: "",
-    name: "Select",
-    props: SelectDefaultProps,
-    fields: SelectFormType,
-    margins: defaultMargins,
-    customCss: "",
-    valid: false,
-  },
-  Form: {
-    id: "",
-    name: "Form",
-    props: FormDefaultProps,
-    fields: FormFormTypes,
-    margins: defaultMargins,
-    customCss: "",
-    children: [],
-    valid: false,
-  },
+export type ComponentsList = "Input" | "Select" | "Form";
+
+export const DesignerComponents: Record<ComponentsList, any> = {
+  Input: {},
+  Form: {},
+  Select: {},
 };
+
+export function getComponent(
+  hasForm: boolean,
+  name: ComponentsList
+): IComponent<any> {
+  switch (name) {
+    case "Input":
+      return {
+        id: "",
+        name: "Input",
+        props: InputDefaultProps,
+        margins: defaultMargins,
+        customCss: "",
+        valid: !hasForm,
+      };
+    case "Select":
+      return {
+        id: "",
+        name: "Select",
+        props: SelectDefaultProps,
+        margins: defaultMargins,
+        customCss: "",
+        valid: false,
+      };
+    case "Form":
+      return {
+        id: "",
+        name: "Form",
+        props: FormDefaultProps,
+        margins: defaultMargins,
+        customCss: "",
+        children: [],
+        valid: false,
+      };
+
+    default:
+      throw new Error(`Not declared component: ${name}`);
+  }
+}
+
+export function getFormFields(
+  hasForm: boolean,
+  name: ComponentsList
+): Record<string, FieldProperties> {
+  switch (name) {
+    case "Input":
+      return hasForm ? FormInputFieldsTypes : NoFormInputFieldsTypes;
+
+    case "Select":
+      return hasForm ? FormSelectFieldsTypes : NoFormSelectFieldsTypes;
+
+    case "Form":
+      return FormFieldsTypes;
+
+    default:
+      throw new Error(`Not declared component: ${name}`);
+  }
+}
 
 export const PreviewComponents = ({
   index,

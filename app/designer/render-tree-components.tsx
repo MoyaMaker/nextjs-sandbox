@@ -8,8 +8,7 @@ import { DesignerComponent } from "./components/designer-component";
 import Dropzone from "./components/drop-zone-component";
 
 export default function RenderTreeComponents() {
-  const { treeComponents, selectedComponent, setSelectedComponent } =
-    useTreeComponents();
+  const { treeComponents } = useTreeComponents();
 
   const [{ isOver }, drop] = useDrop<IComponent<any>, any, any>({
     accept: [DndTypes.COMPONENT],

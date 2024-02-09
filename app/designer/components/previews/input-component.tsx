@@ -13,7 +13,7 @@ type BasicInputAttributes = Pick<
 
 export type InputProps = BasicInputAttributes & {
   label: string;
-  field: string;
+  field?: string;
 };
 
 export const InputDefaultProps: InputProps = {
@@ -25,7 +25,28 @@ export const InputDefaultProps: InputProps = {
   disabled: false,
 };
 
-export const InputFormTypes: Record<keyof InputProps, FieldProperties> = {
+export const NoFormInputFieldsTypes: Record<
+  keyof Omit<InputProps, "field">,
+  FieldProperties
+> = {
+  name: {
+    type: "input",
+  },
+  label: {
+    type: "input",
+  },
+  placeholder: {
+    type: "input",
+  },
+  disabled: {
+    type: "checkbox",
+  },
+  required: {
+    type: "checkbox",
+  },
+};
+
+export const FormInputFieldsTypes: Record<keyof InputProps, FieldProperties> = {
   name: {
     type: "input",
   },

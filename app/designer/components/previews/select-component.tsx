@@ -11,28 +11,75 @@ import {
 } from "../../interfaces/component-interface";
 import { parseInlineCss } from "../../helpers/parse-inline-css";
 import { cn } from "@/lib/utils";
+import { SelectHTMLAttributes } from "react";
 
-export type SelectProps = {
-  placeholder?: string | undefined;
-  defaultValue?: string | undefined;
-  required?: boolean | undefined;
+type BasicSelectAttributes = Pick<
+  SelectHTMLAttributes<HTMLSelectElement>,
+  "name" | "required" | "disabled" | "multiple"
+>;
+
+export type SelectProps = BasicSelectAttributes & {
+  label: string;
+  data: string;
+  field: string;
 };
 
 export const SelectDefaultProps: SelectProps = {
-  placeholder: "",
-  defaultValue: "",
+  name: "",
+  label: "Label",
+  data: "",
+  field: "",
   required: false,
+  multiple: false,
+  disabled: false,
 };
 
-export const SelectFormType: Record<keyof SelectProps, FieldProperties> = {
-  placeholder: {
+export const NoFormSelectFieldsTypes: Record<
+  keyof Omit<SelectProps, "field">,
+  FieldProperties
+> = {
+  name: {
     type: "input",
+  },
+  label: {
+    type: "input",
+  },
+  data: {
+    type: "select-data-table",
     required: true,
   },
-  defaultValue: {
-    type: "input",
+  multiple: {
+    type: "checkbox",
   },
   required: {
+    type: "checkbox",
+  },
+  disabled: {
+    type: "checkbox",
+  },
+};
+
+export const FormSelectFieldsTypes: Record<
+  keyof Omit<SelectProps, "data">,
+  FieldProperties
+> = {
+  name: {
+    type: "input",
+  },
+  label: {
+    type: "input",
+  },
+  field: {
+    type: "select-data-table",
+    required: true,
+  },
+  multiple: {
+    type: "checkbox",
+  },
+  required: {
+    type: "checkbox",
+  },
+  disabled: {
     type: "checkbox",
   },
 };
@@ -47,12 +94,12 @@ export function SelectPreviewComponent({
   const inlineCss = parseInlineCss(customCss);
 
   return (
-    <Select defaultValue={props.defaultValue}>
+    <Select>
       <SelectTrigger
         className={cn("pointer-events-none", valid ? "" : "border-red-500")}
         style={{ ...margins, ...inlineCss }}
       >
-        <SelectValue placeholder={props.placeholder} />
+        <SelectValue placeholder={"Select"} />
       </SelectTrigger>
 
       <SelectContent>

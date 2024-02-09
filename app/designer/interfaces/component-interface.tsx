@@ -1,3 +1,5 @@
+import { ComponentsList } from "../constants/designer-components";
+
 export type FieldType =
   | "input"
   | "number"
@@ -13,9 +15,8 @@ export type FieldProperties = {
 
 export interface IComponent<T extends Record<string, any>> {
   id: string;
-  name: string;
+  name: ComponentsList;
   props: T;
-  fields: Record<keyof T, FieldProperties>;
   margins: {
     marginTop: number;
     marginRight: number;

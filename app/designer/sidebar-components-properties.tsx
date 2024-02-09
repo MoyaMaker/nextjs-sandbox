@@ -1,6 +1,6 @@
 import { RenderFormField } from "./components/render-form-field";
 import { IComponent } from "./interfaces/component-interface";
-import { DesignerComponents } from "./constants/designer-components";
+import { getFormFields } from "./constants/designer-components";
 import { useTreeComponents } from "./providers/tree-components-context-provider";
 import {
   Controller,
@@ -10,6 +10,7 @@ import {
 } from "react-hook-form";
 import { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { findPath, hasForm } from "./helpers/component-path";
 
 export default function SidebarComponentProperties() {
   const { selectedComponent } = useTreeComponents();
@@ -58,7 +59,7 @@ const FormMargins = ({
 }: {
   selectedComponent: IComponent<any>;
 }) => {
-  const { margins, customCss } = DesignerComponents[selectedComponent.name];
+  const { margins, customCss } = selectedComponent;
   type FormTypes = typeof margins & {
     customCss: typeof customCss;
   };
@@ -180,14 +181,17 @@ const FormComponent = ({
 }: {
   selectedComponent: IComponent<any>;
 }) => {
-  const { props } = DesignerComponents[selectedComponent.name];
+  const { props } = selectedComponent;
   type FormTypes = typeof props;
 
-  const { updateComponent } = useTreeComponents();
+  const { updateComponent, selectedComponentHasForm } = useTreeComponents();
 
   const componentId = selectedComponent.id;
   const defaultValues = selectedComponent.props;
-  const formFields = DesignerComponents[selectedComponent.name].fields;
+  const formFields = getFormFields(
+    selectedComponentHasForm,
+    selectedComponent.name
+  );
 
   const {
     control,
@@ -224,6 +228,7 @@ const FormComponent = ({
       onSubmit={handleSubmit(onSubmit, onError)}
       className="grid gap-2"
     >
+      {selectedComponentHasForm ? "Has form" : "No form"}
       {Object.entries(formFields).map(([key, value], index) => (
         <div key={index} className="w-full flex justify-between items-center">
           <label htmlFor={key} className="text-xs">

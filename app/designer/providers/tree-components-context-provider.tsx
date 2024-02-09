@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { IComponent } from "../interfaces/component-interface";
@@ -12,15 +13,19 @@ import { ComponentsData } from "@/data/components";
 import { generateId } from "../helpers/generate-id";
 import {
   findPath,
+  hasForm,
   insertAtPath,
   moveAtPath,
   removeFromPath,
 } from "../helpers/component-path";
+import { getComponent } from "../constants/designer-components";
 
 type TreeComponentsContextType = {
   treeComponents: IComponent<any>[] | undefined;
   selectedComponent: IComponent<any> | undefined;
   setSelectedComponent: Dispatch<SetStateAction<IComponent<any> | undefined>>;
+  selectedComponentPath: string;
+  selectedComponentHasForm: boolean;
   addComponent: (component: IComponent<any>) => void;
   removeComponent: (componentId: string) => void;
   updateComponent: (component: IComponent<any>) => void;
@@ -46,6 +51,22 @@ export function TreeComponentsProvider({
     IComponent<any> | undefined
   >();
 
+  const selectedComponentPath = useMemo(() => {
+    if (!selectedComponent) return "";
+
+    const components = treeComponents ? [...treeComponents] : [];
+
+    return findPath("", components, selectedComponent.id);
+  }, [selectedComponent, treeComponents]);
+
+  const selectedComponentHasForm = useMemo(() => {
+    if (!selectedComponent) return false;
+
+    const components = treeComponents ? [...treeComponents] : [];
+
+    return hasForm(selectedComponentPath, components);
+  }, [selectedComponent, selectedComponentPath, treeComponents]);
+
   const addComponent = (component: IComponent<any>) => {
     setTreeComponents((comps) => {
       if (!comps) {
@@ -63,6 +84,7 @@ export function TreeComponentsProvider({
 
     removeFromPath(components, path);
 
+    setSelectedComponent(undefined);
     setTreeComponents(components);
   };
 
@@ -89,8 +111,10 @@ export function TreeComponentsProvider({
       const components = treeComponents ? [...treeComponents] : [];
 
       if (!component.id) {
+        const insideForm = hasForm(path, components);
+
         const newComponent = {
-          ...component,
+          ...getComponent(insideForm, component.name),
           id: generateId(5),
         };
 
@@ -118,6 +142,8 @@ export function TreeComponentsProvider({
         treeComponents,
         selectedComponent,
         setSelectedComponent,
+        selectedComponentPath,
+        selectedComponentHasForm,
         updateComponent,
         addComponent,
         removeComponent,

@@ -19,7 +19,7 @@ export const FormDefaultProps: FormProps = {
   type: "create",
 };
 
-export const FormFormTypes: Record<keyof FormProps, FieldProperties> = {
+export const FormFieldsTypes: Record<keyof FormProps, FieldProperties> = {
   name: {
     type: "input",
   },

@@ -1,5 +1,19 @@
 import { IComponent } from "../interfaces/component-interface";
 
+export function hasForm(path: string, components: IComponent<any>[]): boolean {
+  const indexes = path.split("-").map(Number);
+
+  if (indexes.length === 1) return false;
+
+  for (let index of indexes) {
+    if (components[index].name === "Form") {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export function findPath(
   path: string | null,
   components: IComponent<any>[],
