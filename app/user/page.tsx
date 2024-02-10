@@ -9,7 +9,7 @@ import { FormField } from "./components/form-field-component";
 import { getFormFields } from "./helpers/get-form-fields-helper";
 
 export default function UserPage() {
-  const schemaForm = getSchema("user");
+  const schemaForm = getSchema("user", true);
   const formFields = getFormFields("user");
   type FormType = z.infer<typeof schemaForm>;
   const defaultValues = useMemo(() => {
@@ -52,7 +52,7 @@ export default function UserPage() {
                   <label htmlFor={key} className="text-sm">
                     {key}
                   </label>
-                  <FormField type={formFields[key].type} field={field} />
+                  <FormField type={formFields[key]} field={field} />
                   <div className="h-3 text-xs leading-3">
                     {errors[key] ? (
                       <span className="text-red-500">

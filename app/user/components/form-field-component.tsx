@@ -21,7 +21,7 @@ export function FormField({
       <input
         {...field}
         id={field.name}
-        className="px-3 py-2 border border-gray-500"
+        className="px-3 py-2 rounded-md border border-gray-400"
       />
     );
   }
