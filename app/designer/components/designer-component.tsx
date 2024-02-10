@@ -1,20 +1,31 @@
+import { useDrag } from "react-dnd";
 import { PreviewComponents } from "../constants/designer-components";
 import { IComponent } from "../interfaces/component-interface";
 import { useTreeComponents } from "../providers/tree-components-context-provider";
-import Dropzone from "./drop-zone-component";
+import Dropzone from "./dropzone-component";
 import { SelectedFrame } from "./selected-component-frame";
+import { DndTypes } from "../constants/dnd-types";
 
 export function DesignerComponent({
-  index,
+  path,
   component,
 }: {
-  index: number;
+  path: string;
   component: IComponent<any>;
 }) {
   const { selectedComponent, setSelectedComponent } = useTreeComponents();
 
+  const [, drag] = useDrag<IComponent<any> & { path: string }, any, any>({
+    type: DndTypes.COMPONENT,
+    item: {
+      ...component,
+      path,
+    },
+  });
+
   return (
     <div
+      ref={drag}
       id={component.id}
       onClick={(e) => {
         setSelectedComponent(component);
@@ -26,9 +37,9 @@ export function DesignerComponent({
         <SelectedFrame selectedComponent={selectedComponent} />
       )}
 
-      <Dropzone path={`${index}`} />
+      <Dropzone path={`${path}`} />
 
-      <PreviewComponents index={index} component={component} />
+      <PreviewComponents path={path} component={component} />
     </div>
   );
 }

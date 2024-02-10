@@ -91,10 +91,10 @@ export function getFormFields(
 }
 
 export const PreviewComponents = ({
-  index,
+  path,
   component,
 }: {
-  index: number;
+  path: string;
   component: IComponent<any>;
 }) => {
   switch (component.name) {
@@ -103,7 +103,7 @@ export const PreviewComponents = ({
     case "Select":
       return <SelectPreviewComponent component={component} />;
     case "Form":
-      return <FormPreviewComponent path={`${index}`} component={component} />;
+      return <FormPreviewComponent path={path} component={component} />;
     default:
       throw new Error(`Preview component not declared: ${component.name}`);
   }

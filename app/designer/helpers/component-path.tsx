@@ -18,7 +18,7 @@ export function findPath(
   path: string | null,
   components: IComponent<any>[],
   componentId: string
-) {
+): string {
   for (let i = 0; i < components.length; i++) {
     if (components[i].id === componentId) {
       if (path) {
@@ -26,14 +26,18 @@ export function findPath(
       }
 
       return `${i}`;
-    } else if (components[i].children) {
+    } else if (components[i]?.children && components[i]?.children?.length) {
       const children = components[i].children ?? [];
 
-      return findPath(`${i}`, children, componentId);
+      const result = findPath(`${i}`, children, componentId);
+
+      if (result !== "-1") {
+        return result;
+      }
     }
   }
 
-  return "0";
+  return "-1";
 }
 
 export function insertAtPath(

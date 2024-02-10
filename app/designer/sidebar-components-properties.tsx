@@ -10,7 +10,6 @@ import {
 } from "react-hook-form";
 import { useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { findPath, hasForm } from "./helpers/component-path";
 
 export default function SidebarComponentProperties() {
   const { selectedComponent } = useTreeComponents();
@@ -228,7 +227,6 @@ const FormComponent = ({
       onSubmit={handleSubmit(onSubmit, onError)}
       className="grid gap-2"
     >
-      {selectedComponentHasForm ? "Has form" : "No form"}
       {Object.entries(formFields).map(([key, value], index) => (
         <div key={index} className="w-full flex justify-between items-center">
           <label htmlFor={key} className="text-xs">

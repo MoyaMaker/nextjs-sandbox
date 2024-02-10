@@ -13,13 +13,19 @@ export default function Dropzone({
 }) {
   const { handleDrop } = useTreeComponents();
 
-  const [{ isOver, canDrop }, drop] = useDrop<IComponent<any>, any, any>({
+  const [{ isOver, canDrop }, drop] = useDrop<
+    IComponent<any> & { path: string },
+    any,
+    any
+  >({
     accept: [DndTypes.COMPONENT],
     collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
     }),
     canDrop: (item) => {
+      if (item.path === path) return false;
+
       const pathSplit = path.split("-");
       pathSplit.pop();
 

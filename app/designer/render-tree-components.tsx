@@ -5,7 +5,7 @@ import { useTreeComponents } from "./providers/tree-components-context-provider"
 import { IComponent } from "./interfaces/component-interface";
 import { DndTypes } from "./constants/dnd-types";
 import { DesignerComponent } from "./components/designer-component";
-import Dropzone from "./components/drop-zone-component";
+import Dropzone from "./components/dropzone-component";
 
 export default function RenderTreeComponents() {
   const { treeComponents } = useTreeComponents();
@@ -32,7 +32,7 @@ export default function RenderTreeComponents() {
           treeComponents.map((component, index) => (
             <DesignerComponent
               key={JSON.stringify(component)}
-              index={index}
+              path={`${index}`}
               component={component}
             />
           ))}

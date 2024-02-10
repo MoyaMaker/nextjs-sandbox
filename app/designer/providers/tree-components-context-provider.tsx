@@ -26,7 +26,6 @@ type TreeComponentsContextType = {
   setSelectedComponent: Dispatch<SetStateAction<IComponent<any> | undefined>>;
   selectedComponentPath: string;
   selectedComponentHasForm: boolean;
-  addComponent: (component: IComponent<any>) => void;
   removeComponent: (componentId: string) => void;
   updateComponent: (component: IComponent<any>) => void;
   handleDrop: (component: IComponent<any>, path: string) => void;
@@ -67,44 +66,40 @@ export function TreeComponentsProvider({
     return hasForm(selectedComponentPath, components);
   }, [selectedComponent, selectedComponentPath, treeComponents]);
 
-  const addComponent = (component: IComponent<any>) => {
-    setTreeComponents((comps) => {
-      if (!comps) {
-        return [component];
-      }
+  const removeComponent = useCallback(
+    (componentId: string) => {
+      const components = treeComponents ? [...treeComponents] : [];
 
-      return [...comps, component];
-    });
-  };
+      const path = findPath("", components, componentId);
 
-  const removeComponent = (componentId: string) => {
-    const components = treeComponents ? [...treeComponents] : [];
+      removeFromPath(components, path);
 
-    const path = findPath("", components, componentId);
+      setSelectedComponent(undefined);
+      setTreeComponents(components);
+    },
+    [treeComponents]
+  );
 
-    removeFromPath(components, path);
+  const updateComponent = useCallback(
+    (component: IComponent<any>) => {
+      const components = treeComponents ? [...treeComponents] : [];
 
-    setSelectedComponent(undefined);
-    setTreeComponents(components);
-  };
+      const path = findPath("", components, component.id);
 
-  const updateComponent = (component: IComponent<any>) => {
-    const components = treeComponents ? [...treeComponents] : [];
+      const compo = removeFromPath(components, path);
 
-    const path = findPath("", components, component.id);
+      const updatedComponent: IComponent<any> = {
+        ...compo,
+        ...component,
+      };
 
-    const compo = removeFromPath(components, path);
+      insertAtPath(components, path, updatedComponent);
 
-    const updatedComponent: IComponent<any> = {
-      ...compo,
-      ...component,
-    };
-
-    insertAtPath(components, path, updatedComponent);
-
-    setSelectedComponent(updatedComponent);
-    setTreeComponents(components);
-  };
+      setSelectedComponent(updatedComponent);
+      setTreeComponents(components);
+    },
+    [treeComponents]
+  );
 
   const handleDrop = useCallback(
     (component: IComponent<any>, path: string) => {
@@ -119,6 +114,8 @@ export function TreeComponentsProvider({
         };
 
         insertAtPath(components, path, newComponent);
+
+        setSelectedComponent(newComponent);
       } else {
         const sourcePath = findPath("", components, component.id);
 
@@ -145,7 +142,6 @@ export function TreeComponentsProvider({
         selectedComponentPath,
         selectedComponentHasForm,
         updateComponent,
-        addComponent,
         removeComponent,
         handleDrop,
       }}

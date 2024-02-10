@@ -4,7 +4,7 @@ import {
 } from "../../interfaces/component-interface";
 import { parseInlineCss } from "../../helpers/parse-inline-css";
 import { cn } from "@/lib/utils";
-import Dropzone from "../drop-zone-component";
+import Dropzone from "../dropzone-component";
 import { DesignerComponent } from "../designer-component";
 
 export type FormProps = {
@@ -47,14 +47,18 @@ export function FormPreviewComponent({
     <form
       style={{ ...margins, ...inlineCss }}
       className={cn(
-        "w-full flex flex-col gap-2 border-2 border-dashed p-2",
+        "w-full flex flex-col border-2 border-dashed p-2",
         valid ? "border-gray-400" : "border-red-500"
       )}
       onSubmit={(e) => e.preventDefault()}
     >
       {children &&
         children.map((item, index) => (
-          <DesignerComponent key={item.id} index={index} component={item} />
+          <DesignerComponent
+            key={item.id}
+            path={`${path}-${index}`}
+            component={item}
+          />
         ))}
 
       <Dropzone path={`${path}-${children?.length ?? 0}`} isLast />
