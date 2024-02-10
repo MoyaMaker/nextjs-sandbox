@@ -39,7 +39,11 @@ export default function Dropzone({
 
       return true;
     },
-    drop: (item) => handleDrop(item, path),
+    drop: (item) => {
+      const { path: itemPath, ...component } = item;
+
+      handleDrop(component, path);
+    },
   });
 
   return (

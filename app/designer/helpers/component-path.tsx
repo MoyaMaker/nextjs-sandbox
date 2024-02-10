@@ -66,30 +66,3 @@ export function removeFromPath(components: IComponent<any>[], path: string) {
 
   return currentComponents.splice(indexes[indexes.length - 1], 1)[0];
 }
-
-export function moveAtPath(
-  components: IComponent<any>[],
-  sourcePath: string,
-  destinationPath: string
-) {
-  const srcIndexes = sourcePath.split("-").map(Number);
-  const targetIndexes = destinationPath.split("-").map(Number);
-
-  const item = removeFromPath(components, sourcePath);
-
-  if (
-    srcIndexes.length === targetIndexes.length &&
-    srcIndexes[srcIndexes.length - 1] < targetIndexes[targetIndexes.length - 1]
-  ) {
-    targetIndexes[targetIndexes.length - 1]--;
-  } else if (
-    srcIndexes.length < targetIndexes.length &&
-    srcIndexes[0] < targetIndexes[0]
-  ) {
-    targetIndexes[0]--;
-  }
-
-  const adjustedTargetPath = targetIndexes.join("-");
-
-  insertAtPath(components, adjustedTargetPath, item);
-}

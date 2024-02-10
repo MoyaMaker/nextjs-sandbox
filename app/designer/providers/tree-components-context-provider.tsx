@@ -15,7 +15,6 @@ import {
   findPath,
   hasForm,
   insertAtPath,
-  moveAtPath,
   removeFromPath,
 } from "../helpers/component-path";
 import { getComponent } from "../constants/designer-components";
@@ -86,6 +85,8 @@ export function TreeComponentsProvider({
 
       const path = findPath("", components, component.id);
 
+      if (path === "-1") return;
+
       const compo = removeFromPath(components, path);
 
       const updatedComponent: IComponent<any> = {
@@ -119,12 +120,33 @@ export function TreeComponentsProvider({
       } else {
         const sourcePath = findPath("", components, component.id);
 
-        moveAtPath(components, sourcePath, path);
+        removeFromPath(components, sourcePath);
+
+        const compHasForm = hasForm(path, components);
+        const componentBase = getComponent(compHasForm, component.name);
+
+        // Updating body of components when this is moved across the tree
+        component.props = Object.entries(componentBase.props).reduce(
+          (data, [key]) => {
+            return {
+              ...data,
+              [key]: component.props[key],
+            };
+          },
+          {}
+        );
+        component.valid = componentBase.valid;
+
+        insertAtPath(components, path, component);
+
+        if (selectedComponent && selectedComponent.id === component.id) {
+          setSelectedComponent(component);
+        }
       }
 
       setTreeComponents(components);
     },
-    [treeComponents]
+    [selectedComponent, treeComponents]
   );
 
   useEffect(() => {
