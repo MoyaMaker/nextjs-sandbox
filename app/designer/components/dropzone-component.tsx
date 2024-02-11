@@ -34,7 +34,7 @@ export default function Dropzone({
 
       if (currentPath.length === 0) return true;
 
-      if (!item.id && item.name === "Form") {
+      if (item.name === "Form") {
         return false;
       }
 

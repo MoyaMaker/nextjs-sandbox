@@ -3,7 +3,7 @@ import { z } from "zod";
 export const BaseComponentSchema = z.object({
   id: z.string().default(""),
   name: z.string().default(""),
-  props: z.object({}).default({}),
+  props: z.record(z.string(), z.any()).default({}),
   margins: z
     .object({
       marginTop: z.number().optional(),

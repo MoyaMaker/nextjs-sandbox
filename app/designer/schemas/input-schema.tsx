@@ -19,16 +19,15 @@ const InputDefaultProps = {
   required: false,
 };
 
-// Used for inputs out of form components
-export const InputSchema = ComponentSchema.extend({
-  name: z.string().default("Input"),
-  props: InputProps.omit({ field: true }).default(InputDefaultProps),
-  valid: z.boolean().default(true),
-});
-
 // Used for inputs inside of form component
-export const FormInputSchema = InputSchema.extend({
+export const FormInputSchema = ComponentSchema.extend({
   name: z.string().default("Input"),
   props: InputProps.default(InputDefaultProps),
   valid: z.boolean().default(false),
+});
+
+// Used for inputs out of form components
+export const InputSchema = FormInputSchema.extend({
+  props: InputProps.omit({ field: true }).default(InputDefaultProps),
+  valid: z.boolean().default(true),
 });

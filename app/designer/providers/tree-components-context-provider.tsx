@@ -21,6 +21,7 @@ import {
 import { DesignerComponentType } from "../types/designer-component";
 import { getDefaultComponent } from "../helpers/get-default-component";
 import { Components } from "../constants/components";
+import { getSchema } from "../helpers/get-schema";
 
 type TreeComponentsContextType = {
   treeComponents: DesignerComponentType[] | undefined;
@@ -129,31 +130,35 @@ export function TreeComponentsProvider({
 
         removeFromPath(components, sourcePath);
 
-        // const compHasForm = hasForm(path, components);
-        // const componentBase = getDefaultComponent(compHasForm, component.name as z.infer<typeof Components>);
+        const compHasForm = hasForm(path, components);
+        const componentBase = getDefaultComponent(
+          compHasForm,
+          component.name as z.infer<typeof Components>
+        );
 
         // Updating body of components when this is moved across the tree
-        // component.props = Object.entries(componentBase.props).reduce(
-        //   (data, [key]) => {
-        //     return {
-        //       ...data,
-        //       [key]: component.props[key],
-        //     };
-        //   },
-        //   {}
-        // );
-        // component.valid = componentBase.valid;
+        component.props = Object.entries(componentBase.props).reduce(
+          (data, [key]) => {
+            return {
+              ...data,
+              [key]: component.props[key],
+            };
+          },
+          {}
+        );
+        component.valid = getSchema(
+          compHasForm,
+          component.name as z.infer<typeof Components>
+        ).safeParse(component.props).success;
 
         insertAtPath(components, path, component);
 
-        if (selectedComponent && selectedComponent.id === component.id) {
-          setSelectedComponent(component);
-        }
+        setSelectedComponent(component);
       }
 
       setTreeComponents(components);
     },
-    [selectedComponent, treeComponents]
+    [treeComponents]
   );
 
   useEffect(() => {
