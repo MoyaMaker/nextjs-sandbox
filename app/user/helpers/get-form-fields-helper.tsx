@@ -1,7 +1,7 @@
 import { UserFormFields } from "../schemas/user-schema";
-import { FormField } from "../types/form-field-type";
+import { FieldType } from "../types/form-field-type";
 
-export function getFormFields(name: string): Record<string, FormField> {
+export function getFormFields(name: string): Record<string, FieldType> {
   if (name === "user") {
     return UserFormFields;
   }

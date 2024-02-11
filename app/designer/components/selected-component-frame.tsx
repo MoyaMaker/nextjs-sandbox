@@ -1,11 +1,11 @@
 import { cn } from "@/lib/utils";
-import { IComponent } from "../interfaces/component-interface";
 import { useTreeComponents } from "../providers/tree-components-context-provider";
+import { DesignerComponentType } from "../types/designer-component";
 
 export function SelectedFrame({
   selectedComponent,
 }: {
-  selectedComponent: IComponent<any>;
+  selectedComponent: DesignerComponentType;
 }) {
   const { removeComponent } = useTreeComponents();
 

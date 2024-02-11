@@ -2,16 +2,16 @@ import { useDrop } from "react-dnd";
 
 import { cn } from "@/lib/utils";
 import { useTreeComponents } from "./providers/tree-components-context-provider";
-import { IComponent } from "./interfaces/component-interface";
-import { DndTypes } from "./constants/dnd-types";
-import { DesignerComponent } from "./components/designer-component";
+import { DndType } from "./constants/dnd-type";
 import Dropzone from "./components/dropzone-component";
+import { DesignerComponentType } from "./types/designer-component";
+import { DesignerComponent } from "./components/designer-component";
 
 export default function RenderTreeComponents() {
   const { treeComponents } = useTreeComponents();
 
-  const [{ isOver }, drop] = useDrop<IComponent<any>, any, any>({
-    accept: [DndTypes.COMPONENT],
+  const [{ isOver }, drop] = useDrop<DesignerComponentType, any, any>({
+    accept: [DndType],
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),

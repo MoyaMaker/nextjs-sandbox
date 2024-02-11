@@ -1,9 +1,13 @@
-import { IComponent } from "../interfaces/component-interface";
+import { DesignerComponentType } from "../types/designer-component";
 
-export function hasForm(path: string, components: IComponent<any>[]): boolean {
+export function hasForm(
+  path: string,
+  components: DesignerComponentType[]
+): boolean {
   const indexes = path.split("-").map(Number);
 
   if (indexes.length === 1) return false;
+  if (components.length === 0) return false;
 
   for (let index of indexes) {
     if (components[index].name === "Form") {
@@ -16,7 +20,7 @@ export function hasForm(path: string, components: IComponent<any>[]): boolean {
 
 export function findPath(
   path: string | null,
-  components: IComponent<any>[],
+  components: DesignerComponentType[],
   componentId: string
 ): string {
   for (let i = 0; i < components.length; i++) {
@@ -26,7 +30,7 @@ export function findPath(
       }
 
       return `${i}`;
-    } else if (components[i]?.children && components[i]?.children?.length) {
+    } else if (components[i].children) {
       const children = components[i].children ?? [];
 
       const result = findPath(`${i}`, children, componentId);
@@ -41,9 +45,9 @@ export function findPath(
 }
 
 export function insertAtPath(
-  components: IComponent<any>[],
+  components: DesignerComponentType[],
   path: string,
-  item: IComponent<any>
+  item: DesignerComponentType
 ) {
   const indexes = path.split("-").map(Number);
 
@@ -56,7 +60,10 @@ export function insertAtPath(
   currentComponents.splice(indexes[indexes.length - 1], 0, item);
 }
 
-export function removeFromPath(components: IComponent<any>[], path: string) {
+export function removeFromPath(
+  components: DesignerComponentType[],
+  path: string
+) {
   const indexes = path.split("-").map(Number);
   let currentComponents = components;
 

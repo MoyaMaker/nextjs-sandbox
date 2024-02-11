@@ -1,8 +1,9 @@
 import { useDrop } from "react-dnd";
-import { IComponent } from "../interfaces/component-interface";
-import { DndTypes } from "../constants/dnd-types";
+
 import { cn } from "@/lib/utils";
+import { DndType } from "../constants/dnd-type";
 import { useTreeComponents } from "../providers/tree-components-context-provider";
+import { DesignerComponentType } from "../types/designer-component";
 
 export default function Dropzone({
   path,
@@ -14,11 +15,11 @@ export default function Dropzone({
   const { handleDrop } = useTreeComponents();
 
   const [{ isOver, canDrop }, drop] = useDrop<
-    IComponent<any> & { path: string },
+    DesignerComponentType & { path: string },
     any,
     any
   >({
-    accept: [DndTypes.COMPONENT],
+    accept: [DndType],
     collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),

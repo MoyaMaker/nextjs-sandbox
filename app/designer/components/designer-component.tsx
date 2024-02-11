@@ -1,22 +1,23 @@
 import { useDrag } from "react-dnd";
-import { PreviewComponents } from "../constants/designer-components";
-import { IComponent } from "../interfaces/component-interface";
+
+import { PreviewComponents } from "../components/preview-component";
 import { useTreeComponents } from "../providers/tree-components-context-provider";
 import Dropzone from "./dropzone-component";
 import { SelectedFrame } from "./selected-component-frame";
-import { DndTypes } from "../constants/dnd-types";
+import { DndType } from "../constants/dnd-type";
+import { DesignerComponentType } from "../types/designer-component";
 
 export function DesignerComponent({
   path,
   component,
 }: {
   path: string;
-  component: IComponent<any>;
+  component: DesignerComponentType;
 }) {
   const { selectedComponent, setSelectedComponent } = useTreeComponents();
 
-  const [, drag] = useDrag<IComponent<any> & { path: string }, any, any>({
-    type: DndTypes.COMPONENT,
+  const [, drag] = useDrag<DesignerComponentType & { path: string }, any, any>({
+    type: DndType,
     item: {
       ...component,
       path,

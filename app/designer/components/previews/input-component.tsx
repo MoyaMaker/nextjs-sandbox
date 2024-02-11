@@ -1,90 +1,30 @@
-import { InputHTMLAttributes } from "react";
-import {
-  FieldProperties,
-  IComponent,
-} from "../../interfaces/component-interface";
-import { parseInlineCss } from "../../helpers/parse-inline-css";
 import { cn } from "@/lib/utils";
-
-type BasicInputAttributes = Pick<
-  InputHTMLAttributes<HTMLInputElement>,
-  "name" | "placeholder" | "disabled" | "required"
->;
-
-export type InputProps = BasicInputAttributes & {
-  label: string;
-  field?: string;
-};
-
-export const InputDefaultProps: InputProps = {
-  name: "",
-  label: "Label",
-  placeholder: "",
-  field: "",
-  required: false,
-  disabled: false,
-};
-
-export const NoFormInputFieldsTypes: Record<
-  keyof Omit<InputProps, "field">,
-  FieldProperties
-> = {
-  name: {
-    type: "input",
-  },
-  label: {
-    type: "input",
-  },
-  placeholder: {
-    type: "input",
-  },
-  disabled: {
-    type: "checkbox",
-  },
-  required: {
-    type: "checkbox",
-  },
-};
-
-export const FormInputFieldsTypes: Record<keyof InputProps, FieldProperties> = {
-  name: {
-    type: "input",
-  },
-  label: {
-    type: "input",
-  },
-  placeholder: {
-    type: "input",
-  },
-  field: {
-    type: "input",
-    required: true,
-  },
-  disabled: {
-    type: "checkbox",
-  },
-  required: {
-    type: "checkbox",
-  },
-};
+import { parseInlineCss } from "../../helpers/parse-inline-css";
+import { DesignerComponentType } from "../../types/designer-component";
+import { InputPropsTypes } from "../../types/components-types";
 
 export function InputPreviewComponent({
   component,
 }: {
-  component: IComponent<InputProps>;
+  component: DesignerComponentType;
 }) {
-  const { margins, customCss, props, valid } = component;
+  const { name, margins, customCss, valid } = component;
+  const props = component.props as InputPropsTypes;
 
   const inlineCss = parseInlineCss(customCss);
 
   return (
-    <input
-      {...props}
-      style={{ ...margins, ...inlineCss }}
-      className={cn(
-        "w-full border p-2 rounded-lg pointer-events-none",
-        valid ? "border-gray-400" : "border-red-500"
-      )}
-    />
+    <fieldset className="pointer-events-none">
+      <label htmlFor={name}>{props.label}</label>
+      <input
+        {...props}
+        id={name}
+        style={{ ...margins, ...inlineCss }}
+        className={cn(
+          "w-full border p-2 rounded-lg",
+          valid ? "border-gray-400" : "border-red-500"
+        )}
+      />
+    </fieldset>
   );
 }

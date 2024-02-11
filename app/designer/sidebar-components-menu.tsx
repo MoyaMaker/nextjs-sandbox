@@ -1,6 +1,6 @@
 import { useDrag } from "react-dnd";
-import { DesignerComponents } from "./constants/designer-components";
-import { DndTypes } from "./constants/dnd-types";
+import { Components } from "./constants/components";
+import { DndType } from "./constants/dnd-type";
 
 export default function SidebarComponentsMenu() {
   return (
@@ -8,8 +8,8 @@ export default function SidebarComponentsMenu() {
       <section className="p-4 border-b border-gray-300">Components</section>
 
       <section className="grid grid-cols-3 p-4">
-        {Object.entries(DesignerComponents).map(([key]) => (
-          <DraggableComponent key={key} name={key} />
+        {Components.options.map((name) => (
+          <DraggableComponent key={name} name={name} />
         ))}
       </section>
     </aside>
@@ -18,7 +18,7 @@ export default function SidebarComponentsMenu() {
 
 function DraggableComponent({ name }: { name: string }) {
   const [, ref] = useDrag({
-    type: DndTypes.COMPONENT,
+    type: DndType,
     item: {
       name,
     },

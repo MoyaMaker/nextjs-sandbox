@@ -1,15 +1,15 @@
-import { RenderFormField } from "./components/render-form-field";
-import { IComponent } from "./interfaces/component-interface";
-import { getFormFields } from "./constants/designer-components";
-import { useTreeComponents } from "./providers/tree-components-context-provider";
+import { useEffect } from "react";
 import {
   Controller,
   SubmitErrorHandler,
   SubmitHandler,
   useForm,
 } from "react-hook-form";
-import { useEffect } from "react";
+
+import { useTreeComponents } from "./providers/tree-components-context-provider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FormSelectedComponent } from "./components/form-selected-component";
+import { DesignerComponentType } from "./types/designer-component";
 
 export default function SidebarComponentProperties() {
   const { selectedComponent } = useTreeComponents();
@@ -33,7 +33,7 @@ export default function SidebarComponentProperties() {
         <TabsContent value="properties">
           <section className="p-4">
             {selectedComponent && (
-              <FormComponent
+              <FormSelectedComponent
                 key={selectedComponent.id}
                 selectedComponent={selectedComponent}
               />
@@ -56,7 +56,7 @@ export default function SidebarComponentProperties() {
 const FormMargins = ({
   selectedComponent,
 }: {
-  selectedComponent: IComponent<any>;
+  selectedComponent: DesignerComponentType;
 }) => {
   const { margins, customCss } = selectedComponent;
   type FormTypes = typeof margins & {
@@ -171,96 +171,6 @@ const FormMargins = ({
           </div>
         )}
       />
-    </form>
-  );
-};
-
-const FormComponent = ({
-  selectedComponent,
-}: {
-  selectedComponent: IComponent<any>;
-}) => {
-  const { props } = selectedComponent;
-  type FormTypes = typeof props;
-
-  const { updateComponent, selectedComponentHasForm } = useTreeComponents();
-
-  const componentId = selectedComponent.id;
-  const defaultValues = selectedComponent.props;
-  const formFields = getFormFields(
-    selectedComponentHasForm,
-    selectedComponent.name
-  );
-
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    watch,
-    trigger,
-  } = useForm<FormTypes>({
-    mode: "all",
-    shouldFocusError: false,
-    defaultValues,
-  });
-
-  const onSubmit: SubmitHandler<FormTypes> = (data) =>
-    updateComponent({ ...selectedComponent, props: data, valid: true });
-
-  const onError: SubmitErrorHandler<FormTypes> = () =>
-    updateComponent({ ...selectedComponent, props: watch(), valid: false });
-
-  useEffect(() => {
-    trigger();
-
-    const subscription = watch(() => handleSubmit(onSubmit, onError)());
-
-    return () => {
-      subscription.unsubscribe();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watch]);
-
-  return (
-    <form
-      id={`form_${componentId}`}
-      onSubmit={handleSubmit(onSubmit, onError)}
-      className="grid gap-2"
-    >
-      {Object.entries(formFields).map(([key, value], index) => (
-        <div key={index} className="w-full flex justify-between items-center">
-          <label htmlFor={key} className="text-xs">
-            {key}
-          </label>
-
-          <Controller
-            name={key}
-            control={control}
-            rules={{
-              required: {
-                message: "Required",
-                value: value?.required ?? false,
-              },
-            }}
-            render={({ field }) => (
-              <div className="w-3/5 flex flex-col items-start text-xs">
-                <RenderFormField
-                  id={key}
-                  type={value.type}
-                  field={field}
-                  error={errors[key]}
-                />
-
-                {/* {errors[key] && (
-                  <span className="text-xs text-red-500">
-                    {errors[key]?.message as string}
-                  </span>
-                )} */}
-              </div>
-            )}
-          />
-        </div>
-      ))}
     </form>
   );
 };

@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
@@ -5,91 +6,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  FieldProperties,
-  IComponent,
-} from "../../interfaces/component-interface";
 import { parseInlineCss } from "../../helpers/parse-inline-css";
-import { cn } from "@/lib/utils";
-import { SelectHTMLAttributes } from "react";
-
-type BasicSelectAttributes = Pick<
-  SelectHTMLAttributes<HTMLSelectElement>,
-  "name" | "required" | "disabled" | "multiple"
->;
-
-export type SelectProps = BasicSelectAttributes & {
-  label: string;
-  data: string;
-  field: string;
-};
-
-export const SelectDefaultProps: SelectProps = {
-  name: "",
-  label: "Label",
-  data: "",
-  field: "",
-  required: false,
-  multiple: false,
-  disabled: false,
-};
-
-export const NoFormSelectFieldsTypes: Record<
-  keyof Omit<SelectProps, "field">,
-  FieldProperties
-> = {
-  name: {
-    type: "input",
-  },
-  label: {
-    type: "input",
-  },
-  data: {
-    type: "select-data-table",
-    required: true,
-  },
-  multiple: {
-    type: "checkbox",
-  },
-  required: {
-    type: "checkbox",
-  },
-  disabled: {
-    type: "checkbox",
-  },
-};
-
-export const FormSelectFieldsTypes: Record<
-  keyof Omit<SelectProps, "data">,
-  FieldProperties
-> = {
-  name: {
-    type: "input",
-  },
-  label: {
-    type: "input",
-  },
-  field: {
-    type: "select-data-table",
-    required: true,
-  },
-  multiple: {
-    type: "checkbox",
-  },
-  required: {
-    type: "checkbox",
-  },
-  disabled: {
-    type: "checkbox",
-  },
-};
+import { DesignerComponentType } from "../../types/designer-component";
 
 export function SelectPreviewComponent({
   component,
 }: {
-  component: IComponent<SelectProps>;
+  component: DesignerComponentType;
 }) {
-  const { margins, customCss, props, valid } = component;
+  const { margins, customCss, valid } = component;
 
   const inlineCss = parseInlineCss(customCss);
 

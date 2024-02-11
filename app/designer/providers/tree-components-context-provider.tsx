@@ -8,7 +8,8 @@ import {
   useMemo,
   useState,
 } from "react";
-import { IComponent } from "../interfaces/component-interface";
+import { z } from "zod";
+
 import { ComponentsData } from "@/data/components";
 import { generateId } from "../helpers/generate-id";
 import {
@@ -17,17 +18,21 @@ import {
   insertAtPath,
   removeFromPath,
 } from "../helpers/component-path";
-import { getComponent } from "../constants/designer-components";
+import { DesignerComponentType } from "../types/designer-component";
+import { getDefaultComponent } from "../helpers/get-default-component";
+import { Components } from "../constants/components";
 
 type TreeComponentsContextType = {
-  treeComponents: IComponent<any>[] | undefined;
-  selectedComponent: IComponent<any> | undefined;
-  setSelectedComponent: Dispatch<SetStateAction<IComponent<any> | undefined>>;
+  treeComponents: DesignerComponentType[] | undefined;
+  selectedComponent: DesignerComponentType | undefined;
+  setSelectedComponent: Dispatch<
+    SetStateAction<DesignerComponentType | undefined>
+  >;
   selectedComponentPath: string;
   selectedComponentHasForm: boolean;
   removeComponent: (componentId: string) => void;
-  updateComponent: (component: IComponent<any>) => void;
-  handleDrop: (component: IComponent<any>, path: string) => void;
+  updateComponent: (component: DesignerComponentType) => void;
+  handleDrop: (component: DesignerComponentType, path: string) => void;
 };
 
 type TreeComponentsProviderProps = {
@@ -42,11 +47,11 @@ export function TreeComponentsProvider({
   children,
 }: TreeComponentsProviderProps) {
   const [treeComponents, setTreeComponents] = useState<
-    IComponent<any>[] | undefined
+    DesignerComponentType[] | undefined
   >();
 
   const [selectedComponent, setSelectedComponent] = useState<
-    IComponent<any> | undefined
+    DesignerComponentType | undefined
   >();
 
   const selectedComponentPath = useMemo(() => {
@@ -80,7 +85,7 @@ export function TreeComponentsProvider({
   );
 
   const updateComponent = useCallback(
-    (component: IComponent<any>) => {
+    (component: DesignerComponentType) => {
       const components = treeComponents ? [...treeComponents] : [];
 
       const path = findPath("", components, component.id);
@@ -89,7 +94,7 @@ export function TreeComponentsProvider({
 
       const compo = removeFromPath(components, path);
 
-      const updatedComponent: IComponent<any> = {
+      const updatedComponent: DesignerComponentType = {
         ...compo,
         ...component,
       };
@@ -103,39 +108,41 @@ export function TreeComponentsProvider({
   );
 
   const handleDrop = useCallback(
-    (component: IComponent<any>, path: string) => {
+    (component: DesignerComponentType, path: string) => {
       const components = treeComponents ? [...treeComponents] : [];
 
       if (!component.id) {
         const insideForm = hasForm(path, components);
 
         const newComponent = {
-          ...getComponent(insideForm, component.name),
+          ...getDefaultComponent(
+            insideForm,
+            component.name as z.infer<typeof Components>
+          ),
           id: generateId(5),
         };
 
         insertAtPath(components, path, newComponent);
-
         setSelectedComponent(newComponent);
       } else {
         const sourcePath = findPath("", components, component.id);
 
         removeFromPath(components, sourcePath);
 
-        const compHasForm = hasForm(path, components);
-        const componentBase = getComponent(compHasForm, component.name);
+        // const compHasForm = hasForm(path, components);
+        // const componentBase = getDefaultComponent(compHasForm, component.name as z.infer<typeof Components>);
 
         // Updating body of components when this is moved across the tree
-        component.props = Object.entries(componentBase.props).reduce(
-          (data, [key]) => {
-            return {
-              ...data,
-              [key]: component.props[key],
-            };
-          },
-          {}
-        );
-        component.valid = componentBase.valid;
+        // component.props = Object.entries(componentBase.props).reduce(
+        //   (data, [key]) => {
+        //     return {
+        //       ...data,
+        //       [key]: component.props[key],
+        //     };
+        //   },
+        //   {}
+        // );
+        // component.valid = componentBase.valid;
 
         insertAtPath(components, path, component);
 
@@ -150,7 +157,7 @@ export function TreeComponentsProvider({
   );
 
   useEffect(() => {
-    const components = ComponentsData as IComponent<any>[];
+    const components = ComponentsData as DesignerComponentType[];
 
     setTreeComponents(components);
   }, []);
