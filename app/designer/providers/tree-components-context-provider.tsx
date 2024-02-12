@@ -71,6 +71,27 @@ export function TreeComponentsProvider({
     return hasForm(selectedComponentPath, components);
   }, [selectedComponent, selectedComponentPath, treeComponents]);
 
+  const createComponent = useCallback(
+    (component: DesignerComponentType, path: string) => {
+      const components = treeComponents ? [...treeComponents] : [];
+
+      const insideForm = hasForm(path, components ?? []);
+
+      const newComponent = {
+        ...getDefaultComponent(
+          insideForm,
+          component.name as z.infer<typeof Components>
+        ),
+        id: generateId(5),
+      };
+
+      insertAtPath(components, path, newComponent);
+      setSelectedComponent(newComponent);
+      setTreeComponents(components);
+    },
+    [treeComponents]
+  );
+
   const removeComponent = useCallback(
     (componentId: string) => {
       const components = treeComponents ? [...treeComponents] : [];
@@ -108,57 +129,52 @@ export function TreeComponentsProvider({
     [treeComponents]
   );
 
-  const handleDrop = useCallback(
+  const moveComponent = useCallback(
     (component: DesignerComponentType, path: string) => {
       const components = treeComponents ? [...treeComponents] : [];
 
-      if (!component.id) {
-        const insideForm = hasForm(path, components);
+      const sourcePath = findPath("", components, component.id);
 
-        const newComponent = {
-          ...getDefaultComponent(
-            insideForm,
-            component.name as z.infer<typeof Components>
-          ),
-          id: generateId(5),
-        };
+      const insideForm = hasForm(path, components);
 
-        insertAtPath(components, path, newComponent);
-        setSelectedComponent(newComponent);
-      } else {
-        const sourcePath = findPath("", components, component.id);
+      removeFromPath(components, sourcePath);
 
-        removeFromPath(components, sourcePath);
+      const componentBase = getDefaultComponent(
+        insideForm,
+        component.name as z.infer<typeof Components>
+      );
 
-        const compHasForm = hasForm(path, components);
-        const componentBase = getDefaultComponent(
-          compHasForm,
-          component.name as z.infer<typeof Components>
-        );
+      // Updating body of components when this is moved across the tree
+      component.props = Object.entries(componentBase.props).reduce(
+        (data, [key]) => {
+          return {
+            ...data,
+            [key]: component.props[key],
+          };
+        },
+        {}
+      );
+      component.valid = getSchema(
+        insideForm,
+        component.name as z.infer<typeof Components>
+      ).safeParse(component.props).success;
 
-        // Updating body of components when this is moved across the tree
-        component.props = Object.entries(componentBase.props).reduce(
-          (data, [key]) => {
-            return {
-              ...data,
-              [key]: component.props[key],
-            };
-          },
-          {}
-        );
-        component.valid = getSchema(
-          compHasForm,
-          component.name as z.infer<typeof Components>
-        ).safeParse(component.props).success;
-
-        insertAtPath(components, path, component);
-
-        setSelectedComponent(component);
-      }
-
+      insertAtPath(components, path, component);
+      setSelectedComponent(component);
       setTreeComponents(components);
     },
     [treeComponents]
+  );
+
+  const handleDrop = useCallback(
+    (component: DesignerComponentType, path: string) => {
+      if (!component.id) {
+        createComponent(component, path);
+      } else {
+        moveComponent(component, path);
+      }
+    },
+    [createComponent, moveComponent]
   );
 
   useEffect(() => {

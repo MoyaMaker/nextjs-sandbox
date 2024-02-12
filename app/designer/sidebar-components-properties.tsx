@@ -34,7 +34,7 @@ export default function SidebarComponentProperties() {
           <section className="p-4">
             {selectedComponent && (
               <FormSelectedComponent
-                key={selectedComponent.id}
+                key={JSON.stringify(selectedComponent)}
                 selectedComponent={selectedComponent}
               />
             )}
