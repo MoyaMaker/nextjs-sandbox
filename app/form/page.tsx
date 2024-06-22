@@ -1,21 +1,48 @@
 "use client";
-import { z } from "zod";
 
-const fieldSchema = z.string().min(1);
+import { FormProvider, useForm } from "react-hook-form";
+import { SubmitButton } from "./submit-button";
 
-const FormSchema = z.object({
-  name: z.string().default(""),
-  field: fieldSchema.optional().default(""),
-  required: z.boolean().default(false),
-  disabled: z.boolean().default(false),
-});
-
-type FormType = z.infer<typeof FormSchema>;
+const components = [
+  {
+    type: "text",
+    name: "name",
+  },
+  {
+    type: "number",
+    name: "age",
+  },
+];
 
 export default function Form() {
-  const parsed = FormSchema.parse({});
+  const methods = useForm({
+    mode: "onSubmit",
+  });
 
-  console.log(parsed);
-
-  return <main className="container mx-auto p-4"></main>;
+  return (
+    <main className="container mx-auto p-4">
+      <FormProvider {...methods}>
+        <form
+          onSubmit={methods.handleSubmit(() => {})}
+          className="grid gap-4 max-w-3xl mx-auto"
+        >
+          {components.map((c, i) => (
+            <fieldset
+              key={`${c.name}_${i}`}
+              className="flex justify-between items-center"
+            >
+              <label htmlFor={c.name}>{c.name}</label>
+              <input
+                type={c.name}
+                id={c.name}
+                className="border p-2 rounded-lg"
+                {...methods.register(c.name)}
+              />
+            </fieldset>
+          ))}
+          <SubmitButton />
+        </form>
+      </FormProvider>
+    </main>
+  );
 }
