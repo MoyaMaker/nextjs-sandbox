@@ -60,7 +60,7 @@ export function TreeComponentsProvider({
 
     const components = treeComponents ? [...treeComponents] : [];
 
-    return findPath("", components, selectedComponent.id);
+    return findPath(null, components, selectedComponent.id);
   }, [selectedComponent, treeComponents]);
 
   const selectedComponentHasForm = useMemo(() => {
@@ -96,7 +96,7 @@ export function TreeComponentsProvider({
     (componentId: string) => {
       const components = treeComponents ? [...treeComponents] : [];
 
-      const path = findPath("", components, componentId);
+      const path = findPath(null, components, componentId);
 
       removeFromPath(components, path);
 
@@ -110,7 +110,7 @@ export function TreeComponentsProvider({
     (component: DesignerComponentType) => {
       const components = treeComponents ? [...treeComponents] : [];
 
-      const path = findPath("", components, component.id);
+      const path = findPath(null, components, component.id);
 
       if (path === "-1") return;
 
@@ -133,7 +133,7 @@ export function TreeComponentsProvider({
     (component: DesignerComponentType, path: string) => {
       const components = treeComponents ? [...treeComponents] : [];
 
-      const sourcePath = findPath("", components, component.id);
+      const sourcePath = findPath(null, components, component.id);
 
       const insideForm = hasForm(path, components);
 

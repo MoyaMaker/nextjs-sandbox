@@ -24,16 +24,13 @@ export function findPath(
   componentId: string
 ): string {
   for (let i = 0; i < components.length; i++) {
-    if (components[i].id === componentId) {
-      if (path) {
-        return [path, i].join("-");
-      }
+    const currentPath = path ? [path, i].join("-") : i.toString();
 
-      return `${i}`;
+    if (components[i].id === componentId) {
+      return currentPath;
     } else if (components[i].children) {
       const children = components[i].children ?? [];
-
-      const result = findPath(`${i}`, children, componentId);
+      const result = findPath(currentPath, children, componentId);
 
       if (result !== "-1") {
         return result;
