@@ -1,3 +1,3 @@
-export default function DefaultPage() {
-  return null;
-}
+import DesignerPage from "./page";
+
+export default DesignerPage;
